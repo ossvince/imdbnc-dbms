@@ -1,0 +1,6 @@
+# Don't include creds in repo
+auth.cfg 
+
+# Logs and compiled Java classes
+*.class
+*.log
