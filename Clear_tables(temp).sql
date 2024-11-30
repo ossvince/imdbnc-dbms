@@ -1,0 +1,14 @@
+DELETE FROM TitleRating;
+DELETE FROM TVEpisode;
+DELETE FROM TVSeries;
+DELETE FROM Movie;
+DELETE FROM HasProfession;
+DELETE FROM Profession;
+DELETE FROM AssociatedWith;
+DELETE FROM Writes;
+DELETE FROM Directs;
+DELETE FROM WorksOn;
+DELETE FROM ActsIn;
+DELETE FROM KnownFor;
+DELETE FROM Person;
+DELETE FROM Title;
