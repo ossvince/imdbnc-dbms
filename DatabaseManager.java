@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class DatabaseManager {
@@ -16,6 +17,7 @@ public class DatabaseManager {
     private FileInputStream authFile;
     private String authPath;
     private Properties authProp;
+    DatabaseQuerier query;
 
     public DatabaseManager(String path) {
         this.authPath = path;
@@ -39,6 +41,7 @@ public class DatabaseManager {
         return out;
     }
 
+
     public String connect() {
         String out = null;
         this.readConfig();
@@ -59,6 +62,8 @@ public class DatabaseManager {
             
             try { 
                 this.connection = DriverManager.getConnection(connectionUrl);
+                // set up DatabaseQuerier
+                this.query = new DatabaseQuerier(this.connection, "queries.sql");
             } catch (SQLException e) {
                 e.printStackTrace();
                 out = "ERR: Could not connect to SQL database.";
@@ -69,8 +74,7 @@ public class DatabaseManager {
         return out;
     }
 
-    // TODO: population and deletion of tables with .csv
-    // might also move this monstrosity to its own class file
+    // TODO: read from .sql file 
     private void createPersonTable() throws SQLException, IOException {
         try {
             String update = "CREATE TABLE Person("
@@ -241,30 +245,5 @@ public class DatabaseManager {
         }
     }
 
-    // Queries
-
-    public String queryTopTenMovies() {
-        String out = "";
-        ResultSet results = null;
-        try (Statement stmt = this.connection.createStatement();) {
-            String query = "SELECT m.primaryTitle, tr.avgRating, tr.numVotes "
-                + "FROM Title AS t "
-                + "JOIN TitleRating AS tr ON t.titleID = tr.titleID "
-                + "JOIN Movie AS m ON m.titleID = tr.titleID "
-                + "WHERE tr.numVotes >= 5000 "
-                + "ORDER BY tr.avgRating DESC "
-                + "LIMIT 10;";
-            results = stmt.executeQuery(query);
-            while(results.next()) {
-                System.out.println(results.getString(1) 
-                    + ", " + results.getString(2) 
-                    + ", " + results.getString(3));
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: SQL/Database connection failed.";
-        }
-        return out;
-    }
 
 }
