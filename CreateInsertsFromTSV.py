@@ -144,7 +144,7 @@ def main():
                     match tokens[3]:
                         case 'director':
                             directs.add((titleID, personID))
-                            insertStatement = f"INSERT INTO AssociatedWith (titleID, personID, flag) VALUES ({titleID}, {personID}, 'Directs');\n"
+                            insertStatement = f"INSERT INTO AssociatedWith (titleID, personID, flag) VALUES ({titleID}, {personID}, 'Directed');\n"
                             directsTempFile.write(insertStatement)
                             directCount += 1
                         case 'writer':
@@ -169,6 +169,8 @@ def main():
                             # default/other
                             jobCatagory = tokens[3].replace("'","''")
                             jobName = tokens[4].replace("'","''")
+                            if jobName == '\\N':
+                                jobName = jobCatagory
                             insertStatement = f"INSERT INTO WorksOn (titleID, personID, jobCategory, jobName) VALUES ({titleID}, {personID}, '{jobCatagory}', '{jobName}');\n"
                             insertStatement = insertStatement.replace("'\\N'", "NULL")
                             worksOnTempFile.write(insertStatement)
@@ -195,7 +197,7 @@ def main():
                             if (titleID, personID) not in directs:
                                 insertStatement = f"INSERT INTO AssociatedWith (titleID, personID, flag) VALUES ({titleID}, {personID}, 'Directed');\n"
                                 directsTempFile.write(insertStatement)
-                                
+                            
                         directCount += len(directors)
                     if tokens[2] != "\\N":
                         writers = tokens[2].split(",")
