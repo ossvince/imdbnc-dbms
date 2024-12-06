@@ -15,12 +15,12 @@ public class DatabaseQuerier {
 
     public DatabaseQuerier(Connection connection, String querypath) {
         this.connection = connection;
-        this.queries = readQueries(querypath);
+        this.queries = readSQL(querypath);
     }
     
     // QueryReader
-    public ArrayList<String> readQueries(String path) {
-        ArrayList<String> queries = new ArrayList<>();
+    public ArrayList<String> readSQL(String path) {
+        ArrayList<String> statements = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String currLine = br.readLine();
             String currQuery = "";
@@ -29,7 +29,7 @@ public class DatabaseQuerier {
                     currQuery += currLine + " ";
                 } else {
                     currQuery += currLine;
-                    queries.add(currQuery);
+                    statements.add(currQuery);
                     System.out.println("added query: "+ currQuery);
                     currQuery = "";
                 }
@@ -39,7 +39,7 @@ public class DatabaseQuerier {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return queries;
+        return statements;
     }
 
     // Queries
