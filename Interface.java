@@ -3,8 +3,9 @@ import java.util.Scanner;
 public class Interface {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        System.out.print("Connecting to database...");
+        System.out.println("Connecting to database...");
         DatabaseManager dbm = new DatabaseManager("auth.cfg");
+        dbm.connect();
         showCommands();
         boolean promptLoop = true;
         while(promptLoop) {
@@ -21,8 +22,8 @@ public class Interface {
                     System.out.println("End of processing.\n\n");
                     System.exit(1);
                     break;
-                case "tta":
-                    dbm.queryTopTenMovies();
+                case "mr":
+                    dbm.query.topTenMovies();
                     break;
             }
         }
@@ -36,13 +37,19 @@ public class Interface {
         System.out.println("\n\tWelcome! Here are the available commands:");
         System.out.println("\n\th : View this help menu");
         System.out.println("\tq : Exit this program");
-        System.out.println("\tta : Top 10 Actors by most credits");
-        System.out.println("\tmr : Top 10 Movies by highest Rating");
-        System.out.println("\tmd : Movies directed by a given Person");
-        System.out.println("\tmk : Movies a Person is known for");
-        System.out.println("\ttk : TV Shows a Person is known for");
-        System.out.println("\tml : People associated with a Movie");
-        System.out.println("\tpt : Titles a Person was a part of");
+        System.out.println("\tta : List Top 10 Actors by most credits");
+        System.out.println("\tmr : List Top 10 Movies by highest Rating");
+        System.out.println("\ttd : Find Titles directed by a given Person");
+        System.out.println("\tma : Find people associated with a given Movie");
+        System.out.println("\ttva : Find people associated with a given TV Series");
+        System.out.println("\tmk : Find Movies a given Person is known for");
+        System.out.println("\ttk : Find TV Shows a given Person is known for");
+        System.out.println("\tp : Find a Person by name");
+        System.out.println("\tt : Find a Title by name");
+        System.out.println("\ttr : Find a Title's rating");
+        System.out.println("\tpro : List all Professionals (People with professions)");
+        System.out.println("\tpro : List all episodes of a TV series");
+        System.out.println("\tam : List People who have appeared in all episodes of a given TV series");
     }
 
 }
