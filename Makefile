@@ -1,8 +1,11 @@
+DIR_BIN = bin
+DIR_LIB = lib
+
 build:
-	javac *.java
+	javac -d $(DIR_BIN) -cp $(DIR_BIN) *.java
 
 run: build
-	java -cp .:mssql-jdbc-11.2.0.jre18.jar Interface.app
+	java -cp $(DIR_BIN):$(DIR_LIB)/mssql-jdbc-12.8.1.jre11.jar Interface
 
 clean:
-	rm *.class
+	rm -rf $(DIR_BIN)
