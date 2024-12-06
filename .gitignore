@@ -4,3 +4,6 @@ auth.cfg
 # Logs and compiled Java classes
 *.class
 *.log
+
+# misc.
+.DS_Store
