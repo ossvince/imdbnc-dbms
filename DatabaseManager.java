@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -28,25 +30,23 @@ public class DatabaseManager {
             this.authProp = new Properties();
             authProp.load(this.authFile);
             this.authFile.close();
+            out = "Successfully read config file.";
         } catch (FileNotFoundException e) {
             out = "ERR: Could not find config file. Does auth.cfg exist?";
-            System.out.println(out);
             System.exit(1);
         } catch (IOException e) {
             out = "ERR: Could not read config file.";
-            System.out.println(out);
         }
         return out;
     }
 
     public String connect() {
         String out = null;
-        this.readConfig();
+        System.out.println(this.readConfig());
         String dbuser = this.authProp.getProperty("username");
         String dbpass = this.authProp.getProperty("password");
         if (dbuser == null || dbpass == null) {
-            out = "ERR: Username or password is empty.";
-            System.out.println(out);
+            out = "ERR: Username and/or password is empty in auth.cfg file. Ending processing...";
             System.exit(1);
         } else {
             String connectionUrl = "jdbc:sqlserver://uranium.cs.umanitoba.ca:1433;"
@@ -56,39 +56,82 @@ public class DatabaseManager {
                 + "encrypt=false;"
                 + "trustServerCertificate=false;"
                 + "loginTimeout=30;";
-            
             try { 
                 this.connection = DriverManager.getConnection(connectionUrl);
                 // set up DatabaseQuerier
-                this.query = new DatabaseQuerier(this.connection, "queries.sql");
+                this.query = new DatabaseQuerier(this.connection, "sql/queries.sql");
             } catch (SQLException e) {
                 e.printStackTrace();
                 out = "ERR: Could not connect to SQL database.";
-                System.out.println(out);
             }
         }
-
         return out;
     }
 
     public String createDatabase(String path) {
         String out = "";
-        // read the create_database.sql 
-        this.schema = this.query.readSQL(path);
-        for (String s : schema) {
-            try {
-                this.connection.createStatement().executeUpdate(s);
-            } catch (SQLException e) {
-                e.printStackTrace();
+        // check if tables exist first
+        try {
+            // https://docs.oracle.com/javase/8/docs/api/java/sql/DatabaseMetaData.html#getTables-java.lang.String-java.lang.String-java.lang.String-java.lang.String:A-
+            DatabaseMetaData meta = this.connection.getMetaData();
+            // if the Title table exists, we can assume there is existing data
+            ResultSet results = meta.getTables(null, null, "Title", null);
+            if (results.next()) {
+                return "Tables already exist in the database. Please delete the existing database before trying to create a new one.";
+            } else {
+                this.schema = this.query.readSQL(path);
+                for (String s : schema) {
+                    try {
+                        this.connection.createStatement().executeUpdate(s);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        out = "ERR: Database creation failed executing update!";
+                    }
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            out = "ERR: SQL error when checking JDBC connection metadata!";
         }
-        // match by "TableName(" to get the first line of the string
+        return out;
+    }
+
+    public String updateDatabaseByLine(String path) {
+        String out = "";
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            String currLine = br.readLine();
+            while(currLine != null) {
+                this.connection.prepareStatement(currLine).executeUpdate();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            out = "ERR: Could not find required .sql file to execute updates.";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            out = "ERR: SQL failed while executing update!";
+        }
+        return out;   
+    }
+
+    public String deleteDatabase(String path) {
+        String out = "";
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            String currLine = br.readLine();
+            while(currLine != null) {
+                this.connection.prepareStatement(currLine).executeUpdate();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            out = "ERR: Could not find required .sql file to drop tables.";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            out = "ERR: Database deletion failed executing update!";
+        }
         return out;
     }
 
     public String populateDatabase(String path) {
         String out = "";
-        // read the PopulateDatabase.sql line by line 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String currLine = br.readLine();
             while(currLine != null) {
@@ -103,5 +146,4 @@ public class DatabaseManager {
         }
         return out;
     }
-
 }

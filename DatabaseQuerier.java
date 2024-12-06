@@ -59,6 +59,7 @@ public class DatabaseQuerier {
                     + ", " + results.getString(2) 
                     + ", " + results.getString(3));
             }
+            out = "Query completed.";
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             out = "ERR: SQL/Database connection failed.";
