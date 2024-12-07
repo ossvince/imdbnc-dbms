@@ -94,3 +94,5 @@ SELECT p.personID, p.name, ActsIn.characterPlayed FROM Title
 JOIN ActsIn ON Title.titleID = ActsIn.titleID
 JOIN Person AS p ON ActsIn.personID = p.personID
 WHERE Title.titleID = ?;
+/* listAllProfessions */
+SELECT * FROM Profession;
