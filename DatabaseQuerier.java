@@ -82,7 +82,7 @@ public class DatabaseQuerier {
         String out = "";
         ResultSet results = null;
         try (Statement stmt = this.connection.createStatement();) {
-            int queryIndex = this.queries.indexOf("topTenActors");
+            int queryIndex = getQueryIndex("topTenActors");
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
                 while(results.next()) {
@@ -104,7 +104,7 @@ public class DatabaseQuerier {
         String out = "";
         ResultSet results = null;
         try  {
-            int queryIndex = this.queries.indexOf("directedTitles");
+            int queryIndex = getQueryIndex("directedTitles");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
@@ -129,7 +129,7 @@ public class DatabaseQuerier {
         String out = "";
         try {
             int titleID = Integer.parseInt(input);
-            int queryIndex = this.queries.indexOf("movieAssociates");
+            int queryIndex = getQueryIndex("movieAssociates");
             if (queryIndex > -1) {
                 try {
                     PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
@@ -159,7 +159,7 @@ public class DatabaseQuerier {
         String out = "";
         try {
             ResultSet results = null;
-            int queryIndex = this.queries.indexOf("titlesIn");
+            int queryIndex = getQueryIndex("titlesIn");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
@@ -184,7 +184,7 @@ public class DatabaseQuerier {
         String out = "";
         try {
             ResultSet results = null;
-            int queryIndex = this.queries.indexOf("moviesKnownFor");
+            int queryIndex = getQueryIndex("moviesKnownFor");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
@@ -210,7 +210,7 @@ public class DatabaseQuerier {
         String out = "";
         try {
             ResultSet results = null;
-            int queryIndex = this.queries.indexOf("seriesKnownFor");
+            int queryIndex = getQueryIndex("seriesKnownFor");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
@@ -235,7 +235,7 @@ public class DatabaseQuerier {
         String out = "";
         try {
             ResultSet results = null;
-            int queryIndex = this.queries.indexOf("findPerson");
+            int queryIndex = getQueryIndex("findPerson");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, "%"+name+"%");
@@ -267,7 +267,7 @@ public class DatabaseQuerier {
         String out = "";
         try {
             ResultSet results = null;
-            int queryIndex = this.queries.indexOf("findTitle");
+            int queryIndex = getQueryIndex("findTitle");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, "%" + name + "%");
@@ -299,7 +299,7 @@ public class DatabaseQuerier {
     }
     public String getRatings(String input) {
         String out = "";
-        int queryIndex = this.queries.indexOf("getRatings");
+        int queryIndex = getQueryIndex("getRatings");
         try {
             int titleID = Integer.parseInt(input);
             if (queryIndex > -1) {
@@ -327,7 +327,7 @@ public class DatabaseQuerier {
         String out = "";
         try {
             ResultSet results = null;
-            int queryIndex = this.queries.indexOf("getProfessionals");
+            int queryIndex = getQueryIndex("getProfessionals");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, profName);
@@ -350,7 +350,7 @@ public class DatabaseQuerier {
     }
     public String listSeriesEpisodes(String input) {
         String out = "";
-        int queryIndex = this.queries.indexOf("listSeriesEpisodes");
+        int queryIndex = getQueryIndex("listSeriesEpisodes");
         try {
             int seriesID = Integer.parseInt(input);
             if (queryIndex > -1) {
@@ -387,7 +387,7 @@ public class DatabaseQuerier {
     }
     public String seriesMainCast(String input) {
         String out = "";
-        int queryIndex = this.queries.indexOf("seriesMainCast");
+        int queryIndex = getQueryIndex("seriesMainCast");
         try {
             int seriesID = Integer.parseInt(input);
             if (queryIndex > -1) {
@@ -424,8 +424,8 @@ public class DatabaseQuerier {
         String out = "";
         try {
             int titleID = Integer.parseInt(input);
-            int queryIndex = this.queries.indexOf("listCastAndRoles");
-            if (this.queries.indexOf("listCastAndRoles") > -1) {
+            int queryIndex = getQueryIndex("listCastAndRoles");
+            if (getQueryIndex("listCastAndRoles") > -1) {
                 try {
                     PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                     pstmt.setInt(1, titleID);
@@ -453,7 +453,7 @@ public class DatabaseQuerier {
         String out = "";
         try (Statement stmt = this.connection.createStatement();){
             ResultSet results = null;
-            int queryIndex = this.queries.indexOf("listAllProfessions");
+            int queryIndex = getQueryIndex("listAllProfessions");
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
                 if (results.next()) {
