@@ -225,7 +225,7 @@ public class DatabaseQuerier {
             int queryIndex = this.queries.indexOf("findPerson");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                pstmt.setString(1, name);
+                pstmt.setString(1, "%"+name+"%");
                 results = pstmt.executeQuery();
                 if (results.next()) {
                     out += "Searching for '"+name+"'\n";
@@ -250,7 +250,8 @@ public class DatabaseQuerier {
             int queryIndex = this.queries.indexOf("findTitle");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                pstmt.setString(1, name);
+                pstmt.setString(1, "%" + name + "%");
+                pstmt.setString(2, "%" + name + "%");
                 results = pstmt.executeQuery();
                 if (results.next()) {
                     out += "Searching for title '"+ name +"' \n";
@@ -393,7 +394,29 @@ public class DatabaseQuerier {
             out = "ERR: SQL/Database connection failed."; 
         }
         return out;
-
     }
 
+    public String listAllProfessions() {
+        String out = "";
+        try (Statement stmt = this.connection.createStatement();){
+            ResultSet results = null;
+            int queryIndex = this.queries.indexOf("listAllProfessions");
+            if (queryIndex > -1) {
+                results = stmt.executeQuery(this.queries.get(queryIndex));
+                if (results.next()) {
+                    out += "Listing all Professions\n";
+                }
+                while (results.next()) {
+                    out += "";
+                }
+            } else {
+                out = "ERR: could not find query in filesystem!";
+            }
+            
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            out = "ERR: SQL/Database connection failed."; 
+        }
+        return out;
+    }
 }

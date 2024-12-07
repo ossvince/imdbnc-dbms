@@ -65,8 +65,9 @@ public class Interface {
         System.out.println("\t\ttva : Find people associated with a given TV Series");
         System.out.println("\t\tmk : Find Movies a given Person is known for");
         System.out.println("\t\ttk : Find TV Shows a given Person is known for");
+        System.out.println("\t\tpr : List all Professionals (People with professions)");
         System.out.println("\t\tpro : List all Professionals (People with professions)");
-        System.out.println("\t\tpro : List all episodes of a TV series");
+        System.out.println("\t\teps : List all episodes of a TV series");
         System.out.println("\t\tam : List People who have appeared in all episodes of a given TV series");
     }
 
