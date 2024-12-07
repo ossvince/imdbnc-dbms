@@ -51,15 +51,16 @@ public class DatabaseQuerier {
             int queryIndex = this.queries.indexOf("topTenMovies");
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
+                
+                while(results.next()) {
+                    System.out.println(results.getString(1) 
+                        + ", " + results.getString(2) 
+                        + ", " + results.getString(3));
+                }
+                out = "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
-            while(results.next()) {
-                System.out.println(results.getString(1) 
-                    + ", " + results.getString(2) 
-                    + ", " + results.getString(3));
-            }
-            out = "Query completed.";
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             out = "ERR: SQL/Database connection failed to execute query."; 
@@ -74,12 +75,13 @@ public class DatabaseQuerier {
             int queryIndex = this.queries.indexOf("topTenActors");
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
+                while(results.next()) {
+                    System.out.println(results.getString(1) 
+                        + ", " + results.getString(2));
+                }
+                out = "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
-            }
-            while(results.next()) {
-                System.out.println(results.getString(1) 
-                    + ", " + results.getString(2));
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -97,14 +99,14 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
                 results = pstmt.executeQuery();
+                if(results.next()) {
+                    out += name + " has directed the following titles:\n ";
+                } 
+                while(results.next()) {
+                    out += results.getString(1) + "\n";
+                }
             } else {
                 out = "ERR: could not find query in filesystem!";
-            }
-            if(results.next()) {
-                out += name + " has directed the following titles:\n ";
-            } 
-            while(results.next()) {
-                out += results.getString(1) + "\n";
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -152,15 +154,14 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
                 results = pstmt.executeQuery();
+                if (results.next()) {
+                    out += "Listing all titles " + name + " was a part of: \n";
+                }
+                while(results.next()) {
+                    out += "ID: " + results.getInt(3) + results.getString(1) + " (" + results.getString(2) + ")\n";
+                }
             } else {
                 out = "ERR: could not find query in filesystem!";
-            }
-
-            if (results.next()) {
-                out += "Listing all titles " + name + " was a part of: \n";
-            }
-            while(results.next()) {
-                out += "ID: " + results.getInt(3) + results.getString(1) + " (" + results.getString(2) + ")\n";
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -227,7 +228,7 @@ public class DatabaseQuerier {
             int queryIndex = this.queries.indexOf("findPerson");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                pstmt.setString(1, name);
+                pstmt.setString(1, "%"+name+"%");
                 results = pstmt.executeQuery();
                 if (results.next()) {
                     out += "Searching for person '"+ name + "': \n";
@@ -259,7 +260,8 @@ public class DatabaseQuerier {
             int queryIndex = this.queries.indexOf("findTitle");
             if (queryIndex > -1) {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                pstmt.setString(1, name);
+                pstmt.setString(1, "%" + name + "%");
+                pstmt.setString(2, "%" + name + "%");
                 results = pstmt.executeQuery();
                 if (results.next()) {
                     out += "Searching for title '"+ name +"' \n";
@@ -433,6 +435,30 @@ public class DatabaseQuerier {
         } catch (NumberFormatException e) {
             e.printStackTrace();
             out = "ERR: Invalid input - ID must be an integer";
+        }
+        return out;
+    }
+
+    public String listAllProfessions() {
+        String out = "";
+        try (Statement stmt = this.connection.createStatement();){
+            ResultSet results = null;
+            int queryIndex = this.queries.indexOf("listAllProfessions");
+            if (queryIndex > -1) {
+                results = stmt.executeQuery(this.queries.get(queryIndex));
+                if (results.next()) {
+                    out += "Listing all Professions\n";
+                }
+                while (results.next()) {
+                    out += "";
+                }
+            } else {
+                out = "ERR: could not find query in filesystem!";
+            }
+            
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            out = "ERR: SQL/Database connection failed."; 
         }
         return out;
     }

@@ -20,7 +20,7 @@ public class Interface {
                     in.close();
                     System.out.println("Exiting program...");
                     System.out.println("End of processing.\n\n");
-                    System.exit(1);
+                    System.exit(0);
                     break;
                 case "dbc":
                     System.out.println("Creating database...");
@@ -30,8 +30,10 @@ public class Interface {
                     System.out.println("Repopulating database. Please wait...");
                     System.out.println(dbm.updateDatabaseByLine("sql/insert.sql"));
                     break;
+                case "dd":
+                    System.out.println(dbm.updateDatabaseByLine("sql/deleteData.sql"));
                 case "dbd":
-                    System.out.println(dbm.updateDatabaseByLine("sql/drop.sql"));
+                    System.out.println(dbm.updateDatabaseByLine("sql/dropSchema.sql"));
                     break;
                 case "p":
                     System.out.print("\nFind a Person by name... > ");
@@ -99,7 +101,8 @@ public class Interface {
         System.out.println("\tq : Exit this program \n");
         System.out.println("\t[Database management]");
         System.out.println("\t\tdbc : Create tables in database");
-        System.out.println("\t\tdbd : Delete all data from database");
+        System.out.println("\t\tdd : Delete data from database");
+        System.out.println("\t\tdbd : Fully Delete database");
         System.out.println("\t\tdbr : Repopulate database");
         System.out.println("\t[Database query commands]");
         System.out.println("\t\tp : Find a Person by name");
@@ -111,7 +114,9 @@ public class Interface {
         System.out.println("\t\tma : Find people associated with a given Movie");
         System.out.println("\t\tmk : Find Movies a given Person is known for");
         System.out.println("\t\ttk : Find TV Shows a given Person is known for");
-        System.out.println("\t\tpro : List all people who have a given Profession");
+        System.out.println("\t\tpr : List all Professionals (People with professions)");
+        System.out.println("\t\tpro : List all Professionals (People with professions)");
+        System.out.println("\t\teps : List all episodes of a TV series");
         System.out.println("\t\tam : List People who have appeared in all episodes of a given TV series");
         System.out.println("\t\tat : List all actors in a title, and the characters they played");
     }

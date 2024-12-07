@@ -144,12 +144,12 @@ def main():
                     match tokens[3]:
                         case 'director':
                             directs.add((titleID, personID))
-                            insertStatement = f"INSERT INTO Directs (titleID, personID) VALUES ({titleID}, {personID});\n"
+                            insertStatement = f"INSERT INTO AssociatedWith (titleID, personID, flag) VALUES ({titleID}, {personID}, 'Directed');\n"
                             directsTempFile.write(insertStatement)
                             directCount += 1
                         case 'writer':
                             writes.add((titleID, personID))
-                            insertStatement = f"INSERT INTO Writes (titleID, personID) VALUES ({titleID}, {personID});\n"
+                            insertStatement = f"INSERT INTO AssociatedWith (titleID, personID, flag) VALUES ({titleID}, {personID}, 'Wrote');\n"
                             writesTempFile.write(insertStatement)
                             writeCount += 1
                         case 'actor' | 'actress':
@@ -169,6 +169,8 @@ def main():
                             # default/other
                             jobCatagory = tokens[3].replace("'","''")
                             jobName = tokens[4].replace("'","''")
+                            if jobName == '\\N':
+                                jobName = jobCatagory
                             insertStatement = f"INSERT INTO WorksOn (titleID, personID, jobCategory, jobName) VALUES ({titleID}, {personID}, '{jobCatagory}', '{jobName}');\n"
                             insertStatement = insertStatement.replace("'\\N'", "NULL")
                             worksOnTempFile.write(insertStatement)
@@ -193,9 +195,9 @@ def main():
                             personID = toID(d)
                             validPeopleIDS.add(personID)
                             if (titleID, personID) not in directs:
-                                insertStatement = f"INSERT INTO Directs (titleID, personID) VALUES ({titleID}, {personID});\n"
+                                insertStatement = f"INSERT INTO AssociatedWith (titleID, personID, flag) VALUES ({titleID}, {personID}, 'Directed');\n"
                                 directsTempFile.write(insertStatement)
-                                
+                            
                         directCount += len(directors)
                     if tokens[2] != "\\N":
                         writers = tokens[2].split(",")
@@ -203,7 +205,7 @@ def main():
                             personID = toID(w)
                             validPeopleIDS.add(personID)
                             if (titleID, personID) not in writes:
-                                insertStatement = f"INSERT INTO Writes (titleID, personID) VALUES ({titleID}, {personID});\n"
+                                insertStatement = f"INSERT INTO AssociatedWith (titleID, personID, flag) VALUES ({titleID}, {personID}, 'Wrote');\n"
                                 writesTempFile.write(insertStatement)
                         writeCount += len(writers)
                 line = DirectWritesFile.readline().strip()
@@ -236,7 +238,7 @@ def main():
                         for t in tokens[5].split(","):
                             titleID = toID(t)
                             if titleID in validTitleIDS:
-                                insertStatement = f"INSERT INTO KnownFor (personID, titleID) VALUES ({personID}, {titleID});\n"
+                                insertStatement = f"INSERT INTO AssociatedWith (personID, titleID, flag) VALUES ({personID}, {titleID}, 'KnownFor');\n"
                                 knownForTempFile.write(insertStatement)
 
                 line = personFile.readline().strip()

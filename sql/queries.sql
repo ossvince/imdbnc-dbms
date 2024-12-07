@@ -1,24 +1,22 @@
 /* topTenMovies */
-SELECT m.primaryTitle, tr.avgRating, tr.numVotes
+SELECT top 10 t.primaryTitle, tr.avgRating, tr.numVotes
 FROM Title AS t
 JOIN TitleRating AS tr ON t.titleID = tr.titleID
-JOIN Movie AS m ON m.titleID = tr.titleID
-WHERE tr.numVotes >= 5000
-ORDER BY tr.avgRating DESC
-LIMIT 10;
-/* topTenActors */
-SELECT p.name, COUNT(a.titleID) AS credits
+JOIN Movie AS m ON m.titleID = t.titleID
+ORDER BY tr.avgRating DESC, tr.numVotes DESC;
+/* topTenActors*/ 
+SELECT TOP 10 p.name, COUNT(a.titleID) AS credits
 FROM Person AS p
 JOIN ActsIn AS a ON a.personID = p.personID
-ORDER BY credits DESC
-LIMIT 10;
+GROUP BY p.personID, p.name
+ORDER BY credits DESC;
 /* directedTitles */
 SELECT t.primaryTitle
 FROM Title AS t
 JOIN AssociatedWith AS aw ON aw.titleID = t.titleID
 JOIN Person AS p ON aw.personID = p.personID
-WHERE p.personID = ? AND aw.flag = ‘Directed’
-ORDER BY t.primaryTitle ASC;
+WHERE p.name like ? AND aw.flag = 'Directed'
+ORDER BY t.primaryTitle;
 /* movieAssociates */
 SELECT DISTINCT p.personID, p.name
 FROM Person AS p
@@ -27,17 +25,17 @@ JOIN Title AS t ON aw.titleID = t.titleID
 JOIN Movie AS m ON t.titleID = m.titleID
 WHERE m.titleID = ?;
 /* titlesIn */
-SELECT primaryTitle, originalTitle, titleID
+SELECT primaryTitle, originalTitle, Title.titleID
 FROM Person
 JOIN AssociatedWith ON Person.personID=AssociatedWith.personID
 JOIN Title ON AssociatedWith.titleID=Title.titleID
-WHERE flag != ‘KnownFor’ AND Person.personID = ?
+WHERE flag != 'KnownFor' AND Person.personID = ?
 UNION
-SELECT primaryTitle, originalTitle, titleID
+SELECT primaryTitle, originalTitle, Title.titleID
 FROM Person JOIN WorksOn ON Person.personID=WorksOn.personID
 JOIN Title ON WorksOn.titleID=Title.titleID WHERE Person.personID = ?
 UNION
-SELECT primaryTitle, originalTitle, titleID
+SELECT primaryTitle, originalTitle, Title.titleID
 FROM Person
 JOIN ActsIn ON Person.personID=ActsIn.personID
 JOIN Title ON ActsIn.titleID=Title.titleID WHERE Person.personID = ?;
@@ -47,16 +45,18 @@ FROM Movie
 JOIN Title AS t ON Movie.titleID = t.titleID
 JOIN AssociatedWith AS aw ON t.titleID = aw.titleID
 JOIN Person AS p ON aw.personID = p.personID
-WHERE aw.flag = ‘KnownFor’ AND p.personID= ?;
+WHERE aw.flag = 'KnownFor' AND p.personID= ?;
 /* seriesKnownFor */
 SELECT t.primaryTitle, t.originalTitle
 FROM TVSeries
 JOIN Title AS t ON TVSeries.titleID = t.titleID
 JOIN AssociatedWith AS aw ON t.titleID = aw.titleID
 JOIN Person AS p ON aw.personID = p.personID
-WHERE aw.flag = ‘KnownFor’ AND p.personID= ?;
+WHERE aw.flag = 'KnownFor' AND p.personID= ?;
 /* findPerson */
-SELECT name, personID, age, birthYear, deathYear FROM Person WHERE name LIKE = ?;
+SELECT name, personID, birthYear, deathYear, 
+IIF(deathYear is NULL, YEAR(getdate())-birthYear, deathYear - birthYear) age
+FROM Person WHERE name LIKE ?;
 /* findTitle */
 SELECT primaryTitle, originalTitle, titleID, runTime, startYear, isAdult 
 FROM Title WHERE primaryTitle LIKE ? OR originalTitle LIKE ?;
@@ -65,31 +65,34 @@ SELECT avgRating, numVotes FROM Title
 JOIN TitleRating ON Title.titleID=TitleRating.titleID
 WHERE Title.titleID=?;
 /* getProfessionals */
-SELECT name, personID FROM Profession
+SELECT name, Person.personID, Profession.professionName FROM Profession
 JOIN HasProfession ON Profession.professionName=HasProfession.professionName
 JOIN Person ON HasProfession.personID=Person.personID
-WHERE Profession.professionName = ?;
+WHERE Profession.professionName like ?;
 /* listSeriesEpisodes */
 SELECT t.*, e.episodeID FROM TVSeries AS s
-JOIN EpisodeOf AS epof ON s.seriesID = epof.seriesID
-JOIN TVEpisode AS e ON epof.episodeID = e.episodeID
+JOIN TVEpisode AS e ON s.seriesID = e.seriesID
 JOIN Title AS t ON e.titleID = t.titleID
 WHERE s.seriesID = ?;
 /* seriesMainCast */
-WITH allEpisodes as (SELECT * AS episodes
+WITH allEpisodes AS (
+SELECT s.*
 FROM TVSeries AS s
-JOIN EpisodeOF AS epof ON s.seriesID = epof.seriesID
-JOIN TVEpisode as e ON epof.episodeID = e.episodeID
+JOIN TVEpisode AS e ON s.seriesID = e.seriesID
 WHERE s.seriesID = ?)
-SELECT p.* FROM People AS p
-JOIN ActsIn ON p.peopleID = ActsIn.peopleID
+SELECT *, IIF(deathYear is NULL, YEAR(getdate())-birthYear, deathYear - birthYear) age
+from Person where Person.personID in (
+SELECT p.personID FROM Person AS p
+JOIN ActsIn ON p.personID = ActsIn.personID
 JOIN TVEpisode ON ActsIn.titleID = TVEpisode.titleID
-JOIN EpisodeOf ON TVEpisode.episodeID = EpisodeOf.episodeID
-WHERE EpisodeOF.seriesID = ?
-GROUP BY p.peopleID
-HAVING count(*) = (SELECT count(*) FROM allEpisodes);
+JOIN TVSeries ON TVEpisode.seriesID = TVSeries.seriesID
+WHERE TVSeries.seriesID = ?
+GROUP BY p.personID
+HAVING count(*) = (SELECT count(*) FROM allEpisodes));
 /* listCastAndRoles */
-SELECT p.name, p.personID, ActsIn.character FROM Title
+SELECT p.personID, p.name, ActsIn.characterPlayed FROM Title
 JOIN ActsIn ON Title.titleID = ActsIn.titleID
-JOIN People AS p ON ActsIn.personID = p.personID
+JOIN Person AS p ON ActsIn.personID = p.personID
 WHERE Title.titleID = ?;
+/* listAllProfessions */
+SELECT * FROM Profession;
