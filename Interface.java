@@ -71,11 +71,15 @@ public class Interface {
                     System.out.print("\nEnter a person's name to find TV series that they are known for... > ");
                     System.out.println(dbm.query.seriesKnownFor(in.nextLine()));
                     break;
+                case "pr":
+                    System.out.println("Listing all professions");
+                    System.out.println(dbm.query.listAllProfessions());
+                    break;
                 case "pro":
                     System.out.print("\nEnter a Profession name to list people with that profession... > ");
                     System.out.println(dbm.query.getProfessionals(in.nextLine()));
                     break;
-                case "ep":
+                case "eps":
                     System.out.print("\nEnter a Series name to list its episodes... > ");
                     System.out.println(dbm.query.listSeriesEpisodes(in.nextLine()));
                     break;
@@ -114,7 +118,7 @@ public class Interface {
         System.out.println("\t\tma : Find people associated with a given Movie");
         System.out.println("\t\tmk : Find Movies a given Person is known for");
         System.out.println("\t\ttk : Find TV Shows a given Person is known for");
-        System.out.println("\t\tpr : List all Professionals (People with professions)");
+        System.out.println("\t\tpr : List all Professions");
         System.out.println("\t\tpro : List all Professionals (People with professions)");
         System.out.println("\t\teps : List all episodes of a TV series");
         System.out.println("\t\tam : List People who have appeared in all episodes of a given TV series");

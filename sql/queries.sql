@@ -4,7 +4,7 @@ FROM Title AS t
 JOIN TitleRating AS tr ON t.titleID = tr.titleID
 JOIN Movie AS m ON m.titleID = t.titleID
 ORDER BY tr.avgRating DESC, tr.numVotes DESC;
-/* topTenActors*/ 
+/* topTenActors */ 
 SELECT TOP 10 p.name, COUNT(a.titleID) AS credits
 FROM Person AS p
 JOIN ActsIn AS a ON a.personID = p.personID
