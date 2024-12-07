@@ -30,7 +30,7 @@ public class DatabaseQuerier {
                 } else {
                     currQuery += currLine;
                     statements.add(currQuery);
-                    System.out.println("added query: "+ currQuery);
+                    // System.out.println("added query: "+ currQuery);
                     currQuery = "";
                 }
                 currLine = br.readLine();
@@ -42,13 +42,23 @@ public class DatabaseQuerier {
         return statements;
     }
 
+    private int getQueryIndex(String queryName){
+        int result = -1;
+        for (int i=0; i < queries.size(); i++){
+            if( queries.get(i).toUpperCase().contains(queryName.toUpperCase())){
+                result = i;
+                break;
+            }
+        }
+        return result;
+    }
     // Queries
 
     public String topTenMovies() {
         String out = "";
         ResultSet results = null;
         try (Statement stmt = this.connection.createStatement();) {
-            int queryIndex = this.queries.indexOf("topTenMovies");
+            int queryIndex = getQueryIndex("topTenMovies");
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
                 
