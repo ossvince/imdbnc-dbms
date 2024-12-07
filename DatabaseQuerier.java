@@ -51,15 +51,16 @@ public class DatabaseQuerier {
             int queryIndex = this.queries.indexOf("topTenMovies");
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
+                
+                while(results.next()) {
+                    System.out.println(results.getString(1) 
+                        + ", " + results.getString(2) 
+                        + ", " + results.getString(3));
+                }
+                out = "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
-            while(results.next()) {
-                System.out.println(results.getString(1) 
-                    + ", " + results.getString(2) 
-                    + ", " + results.getString(3));
-            }
-            out = "Query completed.";
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             out = "ERR: SQL/Database connection failed.";
@@ -74,12 +75,13 @@ public class DatabaseQuerier {
             int queryIndex = this.queries.indexOf("topTenActors");
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
+                while(results.next()) {
+                    System.out.println(results.getString(1) 
+                        + ", " + results.getString(2));
+                }
+                out = "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
-            }
-            while(results.next()) {
-                System.out.println(results.getString(1) 
-                    + ", " + results.getString(2));
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -97,14 +99,14 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
                 results = pstmt.executeQuery();
+                if(results.next()) {
+                    out += name + " has directed the following titles:\n ";
+                } 
+                while(results.next()) {
+                    out += results.getString(1) + "\n";
+                }
             } else {
                 out = "ERR: could not find query in filesystem!";
-            }
-            if(results.next()) {
-                out += name + " has directed the following titles:\n ";
-            } 
-            while(results.next()) {
-                out += results.getString(1) + "\n";
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -122,14 +124,14 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setInt(1, titleID);
                 results = pstmt.executeQuery();
+                if (results.next()) {
+                    out += "Listing associated people with title " + Integer.toString(titleID) + ":\n";
+                }
+                while(results.next()) {
+                    out += results.getInt(1) + " " + results.getString(2) + "\n";
+                }
             } else {
                 out = "ERR: could not find query in filesystem!";
-            }
-            if (results.next()) {
-                out += "Listing associated people with title " + Integer.toString(titleID) + ":\n";
-            }
-            while(results.next()) {
-                out += results.getInt(1) + " " + results.getString(2) + "\n";
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -148,15 +150,14 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
                 results = pstmt.executeQuery();
+                if (results.next()) {
+                    out += "Listing all titles " + name + " was a part of: \n";
+                }
+                while(results.next()) {
+                    out += "ID: " + results.getInt(3) + results.getString(1) + " (" + results.getString(2) + ")\n";
+                }
             } else {
                 out = "ERR: could not find query in filesystem!";
-            }
-
-            if (results.next()) {
-                out += "Listing all titles " + name + " was a part of: \n";
-            }
-            while(results.next()) {
-                out += "ID: " + results.getInt(3) + results.getString(1) + " (" + results.getString(2) + ")\n";
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();

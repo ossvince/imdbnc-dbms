@@ -20,7 +20,7 @@ public class Interface {
                     in.close();
                     System.out.println("Exiting program...");
                     System.out.println("End of processing.\n\n");
-                    System.exit(1);
+                    System.exit(0);
                     break;
                 case "dbc":
                     System.out.println("Creating database...");
@@ -30,8 +30,10 @@ public class Interface {
                     System.out.println("Repopulating database. Please wait...");
                     System.out.println(dbm.updateDatabaseByLine("sql/insert.sql"));
                     break;
+                case "dd":
+                    System.out.println(dbm.updateDatabaseByLine("sql/deleteData.sql"));
                 case "dbd":
-                    System.out.println(dbm.updateDatabaseByLine("sql/drop.sql"));
+                    System.out.println(dbm.updateDatabaseByLine("sql/dropSchema.sql"));
                 case "mr":
                     System.out.println(dbm.query.topTenMovies());
                     break;
@@ -49,7 +51,8 @@ public class Interface {
         System.out.println("\tq : Exit this program \n");
         System.out.println("\t[Database management]");
         System.out.println("\t\tdbc : Create tables in database");
-        System.out.println("\t\tdbd : Delete all data from database");
+        System.out.println("\t\tdd : Delete data from database");
+        System.out.println("\t\tdbd : Fully Delete database");
         System.out.println("\t\tdbr : Repopulate database");
         System.out.println("\t\t[Database query commands]");
         System.out.println("\t\tp : Find a Person by name");

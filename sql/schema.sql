@@ -1,7 +1,6 @@
 CREATE TABLE Person(
     personID INT NOT NULL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
-    age INT,
     birthYear INT,
     deathYear INT
 );
