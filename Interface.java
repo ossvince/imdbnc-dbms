@@ -79,7 +79,7 @@ public class Interface {
                     System.out.print("\nEnter a Profession name to list people with that profession... > ");
                     System.out.println(dbm.query.getProfessionals(in.nextLine()));
                     break;
-                case "ep":
+                case "eps":
                     System.out.print("\nEnter a Series name to list its episodes... > ");
                     System.out.println(dbm.query.listSeriesEpisodes(in.nextLine()));
                     break;
