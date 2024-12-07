@@ -1,6 +1,6 @@
 CREATE TABLE Person(
     personID INT NOT NULL PRIMARY KEY,
-    name TEXT NOT NULL,
+    name VARCHAR(150) NOT NULL,
     age INT,
     birthYear INT,
     deathYear INT
@@ -8,8 +8,8 @@ CREATE TABLE Person(
 
 CREATE TABLE Title(
     titleID INT NOT NULL PRIMARY KEY,
-    primaryTitle TEXT NOT NULL,
-    originalTitle TEXT NOT NULL,
+    primaryTitle VARCHAR(200) NOT NULL,
+    originalTitle VARCHAR(200) NOT NULL,
     startYear INT,
     runTime INT CHECK(runTime>0),
     isAdult BIT NOT NULL
@@ -41,29 +41,11 @@ CREATE TABLE WorksOn(
     PRIMARY KEY (personID, titleID, jobCategory, jobName) 
 );
 
-CREATE TABLE Directs(
-    personID INT FOREIGN KEY REFERENCES Person ON DELETE CASCADE,
-    titleID INT FOREIGN KEY REFERENCES Title ON DELETE CASCADE,
-    PRIMARY KEY (personID, titleID) 
-);
-
-CREATE TABLE Writes(
-    personID INT FOREIGN KEY REFERENCES Person ON DELETE CASCADE,
-    titleID INT FOREIGN KEY REFERENCES Title ON DELETE CASCADE,
-    PRIMARY KEY (personID, titleID) 
-);
-
 CREATE TABLE ActsIn(
     personID INT FOREIGN KEY REFERENCES Person ON DELETE CASCADE,
     titleID INT FOREIGN KEY REFERENCES Title ON DELETE CASCADE,
     characterPlayed VARCHAR(200),
     PRIMARY KEY (personID, titleID, characterPlayed)
-);
-
-CREATE TABLE KnownFor(
-    personID INT  FOREIGN KEY REFERENCES Person ON DELETE CASCADE,
-    titleID INT  FOREIGN KEY REFERENCES Title ON DELETE CASCADE,
-    PRIMARY KEY (personID, titleID) 
 );
 
 CREATE TABLE TitleRating(
