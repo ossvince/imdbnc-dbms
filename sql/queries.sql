@@ -1,5 +1,5 @@
 /* topTenMovies */
-SELECT TOP 10 t.primaryTitle, tr.avgRating, tr.numVotes
+SELECT top 10 t.primaryTitle, tr.avgRating, tr.numVotes
 FROM Title AS t
 JOIN TitleRating AS tr ON t.titleID = tr.titleID
 JOIN Movie AS m ON m.titleID = t.titleID
@@ -45,14 +45,14 @@ FROM Movie
 JOIN Title AS t ON Movie.titleID = t.titleID
 JOIN AssociatedWith AS aw ON t.titleID = aw.titleID
 JOIN Person AS p ON aw.personID = p.personID
-WHERE aw.flag = 'KnownFor' AND p.name LIKE ?;
+WHERE aw.flag = 'KnownFor' AND p.personID= ?;
 /* seriesKnownFor */
 SELECT t.primaryTitle, t.originalTitle
 FROM TVSeries
 JOIN Title AS t ON TVSeries.titleID = t.titleID
 JOIN AssociatedWith AS aw ON t.titleID = aw.titleID
 JOIN Person AS p ON aw.personID = p.personID
-WHERE aw.flag = 'KnownFor' AND p.name LIKE ?;
+WHERE aw.flag = 'KnownFor' AND p.personID= ?;
 /* findPerson */
 SELECT name, personID, birthYear, deathYear, 
 IIF(deathYear is NULL, YEAR(getdate())-birthYear, deathYear - birthYear) age
