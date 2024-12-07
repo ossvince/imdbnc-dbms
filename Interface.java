@@ -44,7 +44,7 @@ public class Interface {
                     System.out.println(dbm.query.findTitle(in.nextLine()));
                     break;
                 case "tr":
-                    System.out.print("\n(Get a Title's rating) Enter a titleID... > ");
+                    System.out.print("\nEnter a title ID to get its rating... > ");
                     System.out.println(dbm.query.getRatings(in.nextLine()));
                     break;
                 case "ta":
@@ -72,7 +72,7 @@ public class Interface {
                     System.out.println(dbm.query.seriesKnownFor(in.nextLine()));
                     break;
                 case "pr":
-                    System.out.println("Listing all professions");
+                    System.out.println("\nListing all professions...");
                     System.out.println(dbm.query.listAllProfessions());
                     break;
                 case "pro":
@@ -106,7 +106,7 @@ public class Interface {
         System.out.println("\t[Database management]");
         System.out.println("\t\tdbc : Create tables in database");
         System.out.println("\t\tdd : Delete data from database");
-        System.out.println("\t\tdbd : Fully Delete database");
+        System.out.println("\t\tdbd : Fully delete database schema");
         System.out.println("\t\tdbr : Repopulate database");
         System.out.println("\t[Database query commands]");
         System.out.println("\t\tp : Find a Person by name");

@@ -30,7 +30,7 @@ public class DatabaseQuerier {
                 } else {
                     currQuery += currLine;
                     statements.add(currQuery);
-                    // System.out.println("added query: "+ currQuery);
+                    System.out.println("added query: "+ currQuery); // TODO: remove when done testing
                     currQuery = "";
                 }
                 currLine = br.readLine();
@@ -205,7 +205,6 @@ public class DatabaseQuerier {
         return out;
     }
 
-    // TODO: use person's name instead of personID (suggested from S5 feedback)
     public String seriesKnownFor(String name) {
         String out = "";
         try {
@@ -251,7 +250,9 @@ public class DatabaseQuerier {
                     if (results.getInt(4) != 0) { 
                         out += ", died " + Integer.toString(results.getInt(4));
                     }
-                    out += "\n";
+                    if (results.getInt(5) != 0) {
+                        out += ", age " + Integer.toString(results.getInt(5)) + "\n";
+                    }
                 }
             } else {
                 out = "ERR: could not find query in filesystem!";
@@ -336,7 +337,7 @@ public class DatabaseQuerier {
                     out += "Listing all people with profession '"+profName+"': \n";
                 }
                 while (results.next()) {
-                    out += results.getString(1) + " (id "+ Integer.toString(results.getInt(2)) + ")\n";
+                    out += results.getString(1) + " (id "+ Integer.toString(results.getInt(2)) + ") has profession " + results.getString(3) + "\n";
                 }
             } else {
                 out = "ERR: could not find query in filesystem!";
@@ -406,7 +407,9 @@ public class DatabaseQuerier {
                         if (results.getInt(4) != 0) { 
                             out += ", died " + Integer.toString(results.getInt(4));
                         }
-                        out += "\n";
+                        if (results.getInt(5) != 0) {
+                            out += ", age " + Integer.toString(results.getInt(5)) + "\n";
+                        }
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -456,11 +459,8 @@ public class DatabaseQuerier {
             int queryIndex = getQueryIndex("listAllProfessions");
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
-                if (results.next()) {
-                    out += "Listing all Professions\n";
-                }
                 while (results.next()) {
-                    out += "";
+                    out += "Profession: " + results.getString(1) + "\n";
                 }
             } else {
                 out = "ERR: could not find query in filesystem!";
