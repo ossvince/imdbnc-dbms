@@ -4,9 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -30,7 +28,7 @@ public class DatabaseManager {
             this.authProp = new Properties();
             authProp.load(this.authFile);
             this.authFile.close();
-            out = "Successfully read config file.";
+            out = "...successfully read config file...";
         } catch (FileNotFoundException e) {
             out = "ERR: Could not find config file. Does auth.cfg exist?";
             System.exit(1);
@@ -60,6 +58,7 @@ public class DatabaseManager {
                 this.connection = DriverManager.getConnection(connectionUrl);
                 // set up DatabaseQuerier
                 this.query = new DatabaseQuerier(this.connection, "sql/queries.sql");
+                out = "...successfully connected to SQL database.";
             } catch (SQLException e) {
                 e.printStackTrace();
                 out = "ERR: Could not connect to SQL database.";
@@ -68,84 +67,63 @@ public class DatabaseManager {
         return out;
     }
 
-    public String createDatabase(String path) {
+    public String closeConnection() {
         String out = "";
-        // check if tables exist first
+        Boolean isClosed = false;
         try {
-            // https://docs.oracle.com/javase/8/docs/api/java/sql/DatabaseMetaData.html#getTables-java.lang.String-java.lang.String-java.lang.String-java.lang.String:A-
-            DatabaseMetaData meta = this.connection.getMetaData();
-            // if the Title table exists, we can assume there is existing data
-            ResultSet results = meta.getTables(null, null, "Title", null);
-            if (results.next()) {
-                return "Tables already exist in the database. Please delete the existing database before trying to create a new one.";
-            } else {
-                this.schema = this.query.readSQL(path);
-                for (String s : schema) {
-                    try {
-                        this.connection.createStatement().executeUpdate(s);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        out = "ERR: Database creation failed executing update!";
-                    }
-                }
-            }
+            this.connection.commit();
+            this.connection.close();
+            isClosed = this.connection.isClosed();
+            out = "Disconnect successful? " + Boolean.toString(isClosed);
         } catch (SQLException e) {
             e.printStackTrace();
-            out = "ERR: SQL error when checking JDBC connection metadata!";
+            out = "ERR: SQL error when trying to close the connection.";
         }
+        return out; 
+    }
+
+    public String createDatabase(String path) {
+        String out = "Reading schema...";
+        this.schema = this.query.readSQL(path);
+        for (String s : schema) {
+            try {
+                this.connection.createStatement().executeUpdate(s);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                out = "ERR: Database creation failed executing update!";
+            }
+        }
+        out += " complete.";
         return out;
     }
 
     public String updateDatabaseByLine(String path) {
-        String out = "";
+        String out = "Executing database updates...";
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String currLine = br.readLine();
+            String statement = "";
+            // batch into one statement
+            this.connection.setAutoCommit(false);
+            String currSchema = "";
             while(currLine != null) {
-                System.out.println("Executing update " + currLine);
-                this.connection.prepareStatement(currLine).executeUpdate();
+                // System.out.println("Reading update " + currLine);
+                if (currLine.startsWith("INSERT INTO") && !currSchema.equalsIgnoreCase(currLine.substring(11, currLine.indexOf("(")).trim())) {
+                    currSchema = currLine.substring(11, currLine.indexOf("(")).trim(); 
+                    out += "\n...inserting into " + currSchema + " table...";
+                }
+                statement += currLine;
                 currLine = br.readLine();
             }
+            this.connection.prepareStatement(statement).executeUpdate();
+            this.connection.commit();
+            this.connection.setAutoCommit(true);
+            out += " complete.";
         } catch (IOException e) {
             e.printStackTrace();
             out = "ERR: Could not find required .sql file to execute updates.";
         } catch (SQLException e) {
-            e.printStackTrace();
-            out = "ERR: SQL failed while executing update!";
         }
         return out;   
     }
 
-    public String deleteDatabase(String path) {
-        String out = "";
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            String currLine = br.readLine();
-            while(currLine != null) {
-                this.connection.prepareStatement(currLine).executeUpdate();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            out = "ERR: Could not find required .sql file to drop tables.";
-        } catch (SQLException e) {
-            e.printStackTrace();
-            out = "ERR: Database deletion failed executing update!";
-        }
-        return out;
-    }
-
-    public String populateDatabase(String path) {
-        String out = "";
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            String currLine = br.readLine();
-            while(currLine != null) {
-                this.connection.prepareStatement(currLine).executeUpdate();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            out = "ERR: Could not read database population file!";
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: Database repopulation failed executing update!";
-        }
-        return out;
-    }
 }

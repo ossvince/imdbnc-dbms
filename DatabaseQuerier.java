@@ -30,14 +30,14 @@ public class DatabaseQuerier {
                 } else {
                     currQuery += currLine;
                     statements.add(currQuery);
-                    System.out.println("added query: "+ currQuery); // TODO: remove when done testing
+                    // System.out.println("added query: "+ currQuery);
                     currQuery = "";
                 }
                 currLine = br.readLine();
             }
             br.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("ERR: Could not read SQL file " + path);
         }
         return statements;
     }
@@ -61,19 +61,19 @@ public class DatabaseQuerier {
             int queryIndex = getQueryIndex("topTenMovies");
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
-                
+                int idx = 0; 
                 while(results.next()) {
-                    System.out.println(results.getString(1) 
+                    idx++;
+                    System.out.println("  " + Integer.toString(idx) + ". " + results.getString(1) 
                         + ", " + results.getString(2) 
-                        + ", " + results.getString(3));
+                        + "/10 (" + results.getString(3) + " total user ratings)");
                 }
                 out = "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: SQL/Database connection failed to execute query."; 
+            out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
         }
         return out;
     }
@@ -85,17 +85,18 @@ public class DatabaseQuerier {
             int queryIndex = getQueryIndex("topTenActors");
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
+                int idx = 0;
                 while(results.next()) {
-                    System.out.println(results.getString(1) 
-                        + ", " + results.getString(2));
+                    idx++;
+                    System.out.println("  " + Integer.toString(idx) + ". " + results.getString(1) 
+                        + " has acted in " + results.getString(2) + " titles");
                 }
                 out = "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: SQL/Database connection failed to execute query."; 
+            out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
         }
         return out;
     }
@@ -113,14 +114,15 @@ public class DatabaseQuerier {
                     out += name + " has directed the following titles:\n ";
                 } 
                 while(results.next()) {
-                    out += results.getString(1) + "\n";
+                    out += "  " + results.getString(1) + "\n";
                 }
+                out = "Query completed.";
+
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: SQL/Database connection failed to execute query."; 
+            out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
         }
         return out;
     }
@@ -139,17 +141,16 @@ public class DatabaseQuerier {
                         out += "Listing associated people with title " + Integer.toString(titleID) + ":\n";
                     }
                     while(results.next()) {
-                        out += results.getInt(1) + " " + results.getString(2) + "\n";
+                        out += "  " + results.getInt(1) + " " + results.getString(2) + "\n";
                     }
+                    out += "Query completed. ";
                 } catch (SQLException sqle) {
-                    sqle.printStackTrace();
-                    out = "ERR: SQL/Database connection failed to execute query."; 
+                    out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
                 }
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             out = "ERR: Invalid input - ID must be an integer";
         }
         return out;
@@ -168,14 +169,14 @@ public class DatabaseQuerier {
                     out += "Listing all titles " + name + " was a part of: \n";
                 }
                 while(results.next()) {
-                    out += "ID: " + results.getInt(3) + results.getString(1) + " (" + results.getString(2) + ")\n";
+                    out += "  ID: " + results.getInt(3) + results.getString(1) + " (" + results.getString(2) + ")\n";
                 }
+                out += "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: SQL/Database connection failed to execute query."; 
+            out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
         }
         return out;
     }
@@ -193,14 +194,14 @@ public class DatabaseQuerier {
                     out += "Listing movies that '"+ name + "' is known for: \n";
                 }
                 while (results.next()) {
-                    out += results.getString(1) + "(" + results.getString(2) + ")\n";
+                    out += "  " + results.getString(1) + "(" + results.getString(2) + ")\n";
                 }
+                out += "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: SQL/Database connection failed to execute query."; 
+            out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
         }
         return out;
     }
@@ -218,15 +219,15 @@ public class DatabaseQuerier {
                     out += "Listing TV series that '"+ name + "' is known for: \n";
                 }
                 while (results.next()) {
-                    out += results.getString(1) + "(" + results.getString(2) + ")\n";
+                    out += "  " + results.getString(1) + "(" + results.getString(2) + ")\n";
                 }
+                out += "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
 
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: SQL/Database connection failed to execute query."; 
+            out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
         }
         return out;
     }
@@ -243,7 +244,7 @@ public class DatabaseQuerier {
                     out += "Searching for person '"+ name + "': \n";
                 }
                 while (results.next()) {
-                    out += "ID " + Integer.toString(results.getInt(2)) + ", " + results.getString(1); 
+                    out += "  ID " + Integer.toString(results.getInt(2)) + ", " + results.getString(1); 
                     if (results.getInt(3) != 0) { // getInt returns 0 if NULL
                         out += ", born " + Integer.toString(results.getInt(3));
                     }
@@ -254,13 +255,13 @@ public class DatabaseQuerier {
                         out += ", age " + Integer.toString(results.getInt(5)) + "\n";
                     }
                 }
+                out += "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
 
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: SQL/Database connection failed to execute query."; 
+            out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
         }
         return out;
     }
@@ -278,7 +279,7 @@ public class DatabaseQuerier {
                     out += "Searching for title '"+ name +"' \n";
                 }
                 while (results.next()) {
-                    out += "Found " + results.getString(1);
+                    out += "  Found " + results.getString(1);
                     if (!results.getString(1).equalsIgnoreCase(results.getString(2))) {
                         out += " (" + results.getString(2) + ")";
                     }
@@ -288,13 +289,13 @@ public class DatabaseQuerier {
                     }
                     out += "\n";
                 }
+                out += "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
 
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: SQL/Database connection failed to execute query."; 
+            out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
         }
         return out;
     }
@@ -309,17 +310,16 @@ public class DatabaseQuerier {
                     pstmt.setInt(1, titleID);
                     ResultSet results = pstmt.executeQuery();
                     while (results.next()) {
-                        out += Integer.toString(titleID) + " has an average user rating of " + Integer.toString(results.getInt(1)) + " with " + Integer.toString(results.getInt(2)) + " total votes" ;
+                        out += "  " + Integer.toString(titleID) + " has an average user rating of " + Integer.toString(results.getInt(1)) + " with " + Integer.toString(results.getInt(2)) + " total votes" ;
                     }
+                out += "Query completed.";
                 } catch (SQLException sqle) {
-                    sqle.printStackTrace();
-                    out = "ERR: SQL/Database connection failed to execute query."; 
+                    out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
                 }
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             out = "ERR: Invalid input - ID must be an integer";
         }
         return out;
@@ -337,15 +337,15 @@ public class DatabaseQuerier {
                     out += "Listing all people with profession '"+profName+"': \n";
                 }
                 while (results.next()) {
-                    out += results.getString(1) + " (id "+ Integer.toString(results.getInt(2)) + ") has profession " + results.getString(3) + "\n";
+                    out += "  " + results.getString(1) + " (id "+ Integer.toString(results.getInt(2)) + ") has profession " + results.getString(3) + "\n";
                 }
+                out += "Query completed.";
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
 
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            out = "ERR: SQL/Database connection failed to execute query."; 
+            out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
         }
         return out;
     }
@@ -363,7 +363,7 @@ public class DatabaseQuerier {
                         out += "Listing all episodes in series '"+ input +"' \n";
                     }
                     while (results.next()) {
-                        out += "Episode " + results.getString(1);
+                        out += "  Episode " + results.getString(1);
                         if (!results.getString(1).equalsIgnoreCase(results.getString(2))) {
                             out += " (" + results.getString(2) + ")";
                         }
@@ -373,15 +373,14 @@ public class DatabaseQuerier {
                         }
                         out += ", episode ID: " + Integer.toString(results.getInt(6)) + "\n";
                     }
+                    out += "Query completed.";
                 } catch (SQLException sqle) {
-                    sqle.printStackTrace();
-                    out = "ERR: SQL/Database connection failed to execute query."; 
+                    out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
                 }
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             out = "ERR: Invalid input - ID must be an integer";
         }
         return out;
@@ -400,7 +399,7 @@ public class DatabaseQuerier {
                         out += "Listing people who have appeared in every episode of series "+ Integer.toString(seriesID) + "\n";
                     }
                     while (results.next()) {
-                        out += "ID " + Integer.toString(results.getInt(2)) + ", " + results.getString(1); 
+                        out += "  ID " + Integer.toString(results.getInt(2)) + ", " + results.getString(1); 
                         if (results.getInt(3) != 0) { // getInt returns 0 if NULL
                             out += ", born " + Integer.toString(results.getInt(3));
                         }
@@ -411,13 +410,12 @@ public class DatabaseQuerier {
                             out += ", age " + Integer.toString(results.getInt(5)) + "\n";
                         }
                     }
+                    out += "Query completed.";
                 } catch (SQLException e) {
-                    e.printStackTrace();
-                    out = "ERR: SQL/Database connection failed to execute query."; 
+                    out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
                 }
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             out = "ERR: Invalid input - ID must be an integer";
         }
         return out;
@@ -437,16 +435,14 @@ public class DatabaseQuerier {
                         out += "Listing cast and roles for title "+Integer.toString(titleID)+"\n";
                     }
                     while (results.next()) {
-                        out += results.getString(1) + " (id " + Integer.toString(results.getInt(2)) + ") played character " + results.getString(3) + "\n";
+                        out += "  " + results.getString(1) + " (id " + Integer.toString(results.getInt(2)) + ") played character " + results.getString(3) + "\n";
                     }
+                    out += "Query completed.";
                 } catch (SQLException e) {
-                    e.printStackTrace();
                     out = "ERR: SQL/Database connection failed to execute query.";
                 }
-                
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             out = "ERR: Invalid input - ID must be an integer";
         }
         return out;
@@ -460,14 +456,14 @@ public class DatabaseQuerier {
             if (queryIndex > -1) {
                 results = stmt.executeQuery(this.queries.get(queryIndex));
                 while (results.next()) {
-                    out += "Profession: " + results.getString(1) + "\n";
+                    out += "  Profession: " + results.getString(1) + "\n";
                 }
+                out += "Query completed.";                
             } else {
                 out = "ERR: could not find query in filesystem!";
             }
             
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
             out = "ERR: SQL/Database connection failed."; 
         }
         return out;

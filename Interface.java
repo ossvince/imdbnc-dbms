@@ -18,17 +18,27 @@ public class Interface {
                 case "q":
                     promptLoop = false;
                     in.close();
-                    System.out.println("Exiting program...");
+                    System.out.println("Closing SQL connection and exiting program...");
+                    System.out.println(dbm.closeConnection());
                     System.out.println("End of processing.\n\n");
                     System.exit(0);
                     break;
                 case "dbc":
-                    System.out.println("Creating database...");
-                    System.out.println(dbm.createDatabase("sql/schema.sql"));
+                    System.out.print("WARNING: All existing data will be removed from the database. Enter 'y' to continue, or 'n' to return to the menu... > ");
+                    if (in.nextLine().trim().toLowerCase().equals("y")) {
+                        System.out.println("Cleaning and rebuilding database...");
+                        System.out.println(dbm.updateDatabaseByLine("sql/dropSchema.sql"));
+                        System.out.println("Creating database...");
+                        System.out.println(dbm.createDatabase("sql/schema.sql"));
+                    }
                     break;
                 case "dbr":
-                    System.out.println("Repopulating database. Please wait...");
-                    System.out.println(dbm.updateDatabaseByLine("sql/insert.sql"));
+                    System.out.println("Please wait. Repopulating database...");
+                    //System.out.println(dbm.updateDatabaseByLine("sql/insert-test.sql"));
+                    System.out.println(dbm.updateDatabaseByLine("sql/insert1.sql"));
+                    System.out.println(dbm.updateDatabaseByLine("sql/insert2.sql"));
+                    System.out.println(dbm.updateDatabaseByLine("sql/insert3.sql"));
+                    System.out.println("Database has been successfully populated.");
                     break;
                 case "dd":
                     System.out.println(dbm.updateDatabaseByLine("sql/deleteData.sql"));
@@ -106,8 +116,8 @@ public class Interface {
         System.out.println("\t[Database management]");
         System.out.println("\t- dbc : Create tables in database");
         System.out.println("\t- dd : Delete data from database");
-        System.out.println("\t- dbd : Fully delete database schema");
-        System.out.println("\t- dbr : Repopulate database");
+        System.out.println("\t- dbd : Fully delete database schema and data");
+        System.out.println("\t- dbr : Repopulate database\n");
         System.out.println("\t[Database query commands]");
         System.out.println("\t- p : Find a Person by name");
         System.out.println("\t- t : Find a Title by name");
