@@ -101,6 +101,9 @@ public class Interface {
                     System.out.print("\nEnter a titles name to list its actors... > ");
                     System.out.println(dbm.query.listCastAndRoles(in.nextLine()));
                     break;
+                case "ti":
+                    System.out.print("\nEnter a persons name to list all titles they have been a part of... > ");
+                    System.out.println(dbm.query.titlesIn(in.nextLine()));
             }
         }
         in.close();
@@ -133,6 +136,7 @@ public class Interface {
         System.out.println("\t- eps : List all episodes of a TV series");
         System.out.println("\t- am : List People who have appeared in all episodes of a given TV series");
         System.out.println("\t- at : List all actors in a title, and the characters they played");
+        System.out.println("\t- ti : List all titles a person is in");
     }
 
 }

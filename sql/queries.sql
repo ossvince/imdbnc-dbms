@@ -29,16 +29,16 @@ SELECT primaryTitle, originalTitle, Title.titleID
 FROM Person
 JOIN AssociatedWith ON Person.personID=AssociatedWith.personID
 JOIN Title ON AssociatedWith.titleID=Title.titleID
-WHERE flag != 'KnownFor' AND Person.personID = ?
+WHERE flag != 'KnownFor' AND Person.name like ?
 UNION
 SELECT primaryTitle, originalTitle, Title.titleID
 FROM Person JOIN WorksOn ON Person.personID=WorksOn.personID
-JOIN Title ON WorksOn.titleID=Title.titleID WHERE Person.personID = ?
+JOIN Title ON WorksOn.titleID=Title.titleID WHERE Person.name like ?
 UNION
 SELECT primaryTitle, originalTitle, Title.titleID
 FROM Person
 JOIN ActsIn ON Person.personID=ActsIn.personID
-JOIN Title ON ActsIn.titleID=Title.titleID WHERE Person.personID = ?;
+JOIN Title ON ActsIn.titleID=Title.titleID WHERE Person.name like ?;
 /* moviesKnownFor */
 SELECT t.primaryTitle, t.originalTitle
 FROM Movie
