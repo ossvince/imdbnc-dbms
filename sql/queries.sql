@@ -96,3 +96,4 @@ JOIN Person AS p ON ActsIn.personID = p.personID
 WHERE Title.titleID = ?;
 /* listAllProfessions */
 SELECT * FROM Profession;
+-- TODO add query to get the total number of episodes in a TV series
