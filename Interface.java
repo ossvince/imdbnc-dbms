@@ -98,7 +98,7 @@ public class Interface {
                     System.out.println(dbm.query.seriesMainCast(in.nextLine()));
                     break;
                 case "at":
-                    System.out.print("\nEnter a Series name to list its episodes... > ");
+                    System.out.print("\nEnter a titles name to list its actors... > ");
                     System.out.println(dbm.query.listCastAndRoles(in.nextLine()));
                     break;
             }

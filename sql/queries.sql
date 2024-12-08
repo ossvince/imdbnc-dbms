@@ -45,14 +45,14 @@ FROM Movie
 JOIN Title AS t ON Movie.titleID = t.titleID
 JOIN AssociatedWith AS aw ON t.titleID = aw.titleID
 JOIN Person AS p ON aw.personID = p.personID
-WHERE aw.flag = 'KnownFor' AND p.personID= ?;
+WHERE aw.flag = 'KnownFor' AND p.name like ?;
 /* seriesKnownFor */
 SELECT t.primaryTitle, t.originalTitle
 FROM TVSeries
 JOIN Title AS t ON TVSeries.titleID = t.titleID
 JOIN AssociatedWith AS aw ON t.titleID = aw.titleID
 JOIN Person AS p ON aw.personID = p.personID
-WHERE aw.flag = 'KnownFor' AND p.personID= ?;
+WHERE aw.flag = 'KnownFor' AND p.name like ?;
 /* findPerson */
 SELECT name, personID, birthYear, deathYear, 
 IIF(deathYear is NULL, YEAR(getdate())-birthYear, deathYear - birthYear) age
@@ -70,30 +70,33 @@ JOIN HasProfession ON Profession.professionName=HasProfession.professionName
 JOIN Person ON HasProfession.personID=Person.personID
 WHERE Profession.professionName like ?;
 /* listSeriesEpisodes */
-SELECT t.*, e.episodeID FROM TVSeries AS s
+SELECT t.*, e.episodeID FROM Title AS seriesTitle 
+JOIN TVSeries AS s ON seriesTitle.titleID = s.titleID
 JOIN TVEpisode AS e ON s.seriesID = e.seriesID
 JOIN Title AS t ON e.titleID = t.titleID
-WHERE s.seriesID = ?;
+WHERE seriesTitle.originalTitle like ? OR seriesTitle.primaryTitle like ?;
 /* seriesMainCast */
 WITH allEpisodes AS (
 SELECT s.*
-FROM TVSeries AS s
+FROM Title AS t
+JOIN TVSeries AS s ON t.titleID = s.titleID
 JOIN TVEpisode AS e ON s.seriesID = e.seriesID
-WHERE s.seriesID = ?)
-SELECT *, IIF(deathYear is NULL, YEAR(getdate())-birthYear, deathYear - birthYear) age
+WHERE t.originalTitle like ? OR t.primaryTitle like ?)
+SELECT Person.*, IIF(deathYear is NULL, YEAR(getdate())-birthYear, deathYear - birthYear) age
 from Person where Person.personID in (
 SELECT p.personID FROM Person AS p
 JOIN ActsIn ON p.personID = ActsIn.personID
 JOIN TVEpisode ON ActsIn.titleID = TVEpisode.titleID
 JOIN TVSeries ON TVEpisode.seriesID = TVSeries.seriesID
-WHERE TVSeries.seriesID = ?
+JOIN Title ON TVSeries.titleID = Title.titleID
+WHERE Title.originalTitle like ? OR Title.primaryTitle like ?
 GROUP BY p.personID
 HAVING count(*) = (SELECT count(*) FROM allEpisodes));
 /* listCastAndRoles */
 SELECT p.personID, p.name, ActsIn.characterPlayed FROM Title
 JOIN ActsIn ON Title.titleID = ActsIn.titleID
 JOIN Person AS p ON ActsIn.personID = p.personID
-WHERE Title.titleID = ?;
+WHERE Title.primaryTitle like ? OR Title.originalTitle like ?;
 /* listAllProfessions */
 SELECT * FROM Profession;
 -- TODO add query to get the total number of episodes in a TV series

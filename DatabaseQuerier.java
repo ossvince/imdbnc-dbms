@@ -110,13 +110,13 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
                 results = pstmt.executeQuery();
-                if(results.next()) {
-                    out += name + " has directed the following titles:\n ";
-                } 
+                // if(results.next()) {
+                out += name + " has directed the following titles:\n ";
+                // } 
                 while(results.next()) {
-                    out += "  " + results.getString(1) + "\n";
+                    out += results.getString(1) + "\n";
                 }
-                out = "Query completed.";
+                out += "Query completed.";
 
             } else {
                 out = "ERR: could not find query in filesystem!";
@@ -137,9 +137,9 @@ public class DatabaseQuerier {
                     PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                     pstmt.setInt(1, titleID);
                     ResultSet results = pstmt.executeQuery();
-                    if (results.next()) {
-                        out += "Listing associated people with title " + Integer.toString(titleID) + ":\n";
-                    }
+                    // if (results.next()) {
+                    out += "Listing associated people with title " + Integer.toString(titleID) + ":\n";
+                    // }
                     while(results.next()) {
                         out += "  " + results.getInt(1) + " " + results.getString(2) + "\n";
                     }
@@ -165,9 +165,9 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
                 results = pstmt.executeQuery();
-                if (results.next()) {
-                    out += "Listing all titles " + name + " was a part of: \n";
-                }
+                // if (results.next()) {
+                out += "Listing all titles " + name + " was a part of: \n";
+                // }
                 while(results.next()) {
                     out += "  ID: " + results.getInt(3) + results.getString(1) + " (" + results.getString(2) + ")\n";
                 }
@@ -190,11 +190,15 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
                 results = pstmt.executeQuery();
-                if (results.next()) {
-                    out += "Listing movies that '"+ name + "' is known for: \n";
-                }
+                // if (results.next()) {
+                out += "Listing movies that '"+ name + "' is known for: \n";
+                // }
                 while (results.next()) {
-                    out += "  " + results.getString(1) + "(" + results.getString(2) + ")\n";
+                    out += "  " + results.getString(1);
+                    if(!results.getString(1).equalsIgnoreCase(results.getString(2))){
+                        out += "(" + results.getString(2) + ")";
+                    }
+                    out += "\n";
                 }
                 out += "Query completed.";
             } else {
@@ -215,11 +219,15 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, name);
                 results = pstmt.executeQuery();
-                if (results.next()) {
-                    out += "Listing TV series that '"+ name + "' is known for: \n";
-                }
+                // if (results.next()) {
+                out += "Listing TV series that '"+ name + "' is known for: \n";
+                // }
                 while (results.next()) {
-                    out += "  " + results.getString(1) + "(" + results.getString(2) + ")\n";
+                    out += "  " + results.getString(1);
+                    if (!results.getString(1).equalsIgnoreCase(results.getString(2))){
+                        out += "(" + results.getString(2) + ")";
+                    }
+                    out += "\n";
                 }
                 out += "Query completed.";
             } else {
@@ -240,9 +248,9 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, "%"+name+"%");
                 results = pstmt.executeQuery();
-                if (results.next()) {
-                    out += "Searching for person '"+ name + "': \n";
-                }
+                // if (results.next()) {
+                out += "Searching for person '"+ name + "': \n";
+                // }
                 while (results.next()) {
                     out += "  ID " + Integer.toString(results.getInt(2)) + ", " + results.getString(1); 
                     if (results.getInt(3) != 0) { // getInt returns 0 if NULL
@@ -252,8 +260,9 @@ public class DatabaseQuerier {
                         out += ", died " + Integer.toString(results.getInt(4));
                     }
                     if (results.getInt(5) != 0) {
-                        out += ", age " + Integer.toString(results.getInt(5)) + "\n";
+                        out += ", age " + Integer.toString(results.getInt(5));
                     }
+                    out += "\n";
                 }
                 out += "Query completed.";
             } else {
@@ -275,16 +284,16 @@ public class DatabaseQuerier {
                 pstmt.setString(1, "%" + name + "%");
                 pstmt.setString(2, "%" + name + "%");
                 results = pstmt.executeQuery();
-                if (results.next()) {
-                    out += "Searching for title '"+ name +"' \n";
-                }
+                // if (results.next()) {
+                out += "Searching for title '"+ name +"' \n";
+                // }
                 while (results.next()) {
                     out += "  Found " + results.getString(1);
                     if (!results.getString(1).equalsIgnoreCase(results.getString(2))) {
                         out += " (" + results.getString(2) + ")";
                     }
-                    out += ", id: " + Integer.toString(results.getInt(3)) + ", runtime: " + Integer.toString(results.getInt(4)) + "min";
-                    if (results.getInt(5) != 0) {
+                    out += ", id: " + Integer.toString(results.getInt(3)) + ", runtime: " + Integer.toString(results.getInt(4)) + "min" + ", start year: "+ results.getString(5);
+                    if (results.getInt(6) != 0) {
                         out += ", is an adult title";
                     }
                     out += "\n";
@@ -310,7 +319,7 @@ public class DatabaseQuerier {
                     pstmt.setInt(1, titleID);
                     ResultSet results = pstmt.executeQuery();
                     while (results.next()) {
-                        out += "  " + Integer.toString(titleID) + " has an average user rating of " + Integer.toString(results.getInt(1)) + " with " + Integer.toString(results.getInt(2)) + " total votes" ;
+                        out += "  " + Integer.toString(titleID) + " has an average user rating of " + Integer.toString(results.getInt(1)) + " with " + Integer.toString(results.getInt(2)) + " total votes\n" ;
                     }
                 out += "Query completed.";
                 } catch (SQLException sqle) {
@@ -333,9 +342,9 @@ public class DatabaseQuerier {
                 PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
                 pstmt.setString(1, profName);
                 results = pstmt.executeQuery();
-                if (results.next()) {
-                    out += "Listing all people with profession '"+profName+"': \n";
-                }
+                // if (results.next()) {
+                out += "Listing all people with profession '"+profName+"': \n";
+                // }
                 while (results.next()) {
                     out += "  " + results.getString(1) + " (id "+ Integer.toString(results.getInt(2)) + ") has profession " + results.getString(3) + "\n";
                 }
@@ -353,25 +362,27 @@ public class DatabaseQuerier {
         String out = "";
         int queryIndex = getQueryIndex("listSeriesEpisodes");
         try {
-            int seriesID = Integer.parseInt(input);
+            // String seriesName = input;
             if (queryIndex > -1) {
                 try {
                     PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                    pstmt.setInt(1, seriesID);
+                    pstmt.setString(1, input);
+                    pstmt.setString(2, input);
                     ResultSet results = pstmt.executeQuery();
-                    if (results.next()) {
-                        out += "Listing all episodes in series '"+ input +"' \n";
-                    }
+                    // if (results.next()) {
+                    out += "Listing all episodes in series '"+ input +"' \n";
+                    // }
                     while (results.next()) {
-                        out += "  Episode " + results.getString(1);
-                        if (!results.getString(1).equalsIgnoreCase(results.getString(2))) {
-                            out += " (" + results.getString(2) + ")";
+                        out += "  Episode: " + results.getString(2);
+                        if (!results.getString(2).equalsIgnoreCase(results.getString(3))) {
+                            out += " (" + results.getString(3) + ")";
                         }
-                        out += ", id: " + Integer.toString(results.getInt(3)) + ", runtime: " + Integer.toString(results.getInt(4)) + "min";
-                        if (results.getInt(5) != 0) {
+                        out += ", id: " + results.getString(1) + ", runtime: " + results.getString(4) + "min" + ", start year: "+ results.getString(5);
+                        if (results.getInt(6) != 0) {
                             out += ", is an adult title";
                         }
-                        out += ", episode ID: " + Integer.toString(results.getInt(6)) + "\n";
+                        
+                        out += ", episode ID: " + Integer.toString(results.getInt(7)) + "\n";
                     }
                     out += "Query completed.";
                 } catch (SQLException sqle) {
@@ -389,17 +400,21 @@ public class DatabaseQuerier {
         String out = "";
         int queryIndex = getQueryIndex("seriesMainCast");
         try {
-            int seriesID = Integer.parseInt(input);
+            // int seriesID = Integer.parseInt(input);
             if (queryIndex > -1) {
                 try {
                     PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                    pstmt.setInt(1, seriesID);
+                    pstmt.setString(1, input);
+                    pstmt.setString(2, input);
+                    pstmt.setString(3, input);
+                    pstmt.setString(4, input);
+
                     ResultSet results = pstmt.executeQuery();
-                    if (results.next()) {
-                        out += "Listing people who have appeared in every episode of series "+ Integer.toString(seriesID) + "\n";
-                    }
+                    // if (results.next()) {
+                    out += "Listing people who have appeared in every episode of series "+ input + "\n";
+                    // }
                     while (results.next()) {
-                        out += "  ID " + Integer.toString(results.getInt(2)) + ", " + results.getString(1); 
+                        out += "  " + results.getString(2) + ", ID " + results.getString(1); 
                         if (results.getInt(3) != 0) { // getInt returns 0 if NULL
                             out += ", born " + Integer.toString(results.getInt(3));
                         }
@@ -412,6 +427,7 @@ public class DatabaseQuerier {
                     }
                     out += "Query completed.";
                 } catch (SQLException e) {
+                    System.out.println(e);
                     out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
                 }
             }
@@ -424,18 +440,19 @@ public class DatabaseQuerier {
     public String listCastAndRoles(String input) {
         String out = "";
         try {
-            int titleID = Integer.parseInt(input);
             int queryIndex = getQueryIndex("listCastAndRoles");
             if (getQueryIndex("listCastAndRoles") > -1) {
                 try {
                     PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                    pstmt.setInt(1, titleID);
+                    pstmt.setString(1, input);
+                    pstmt.setString(2, input);
+
                     ResultSet results = pstmt.executeQuery();
-                    if (results.next()) {
-                        out += "Listing cast and roles for title "+Integer.toString(titleID)+"\n";
-                    }
+                    // if (results.next()) {
+                    out += "Listing cast and roles for title "+input+"\n";
+                    // }
                     while (results.next()) {
-                        out += "  " + results.getString(1) + " (id " + Integer.toString(results.getInt(2)) + ") played character " + results.getString(3) + "\n";
+                        out += "  " + results.getString(2) + " (personID " + results.getString(1) + ") played character " + results.getString(3) + "\n";
                     }
                     out += "Query completed.";
                 } catch (SQLException e) {
