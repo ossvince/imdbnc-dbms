@@ -44,7 +44,7 @@ public class DatabaseManager {
         String dbuser = this.authProp.getProperty("username");
         String dbpass = this.authProp.getProperty("password");
         if (dbuser == null || dbpass == null) {
-            out = "ERR: Username and/or password is empty in auth.cfg file. Ending processing...";
+            System.out.println("ERR: Username and/or password is empty in auth.cfg file. Ending processing...");
             System.exit(1);
         } else {
             String connectionUrl = "jdbc:sqlserver://uranium.cs.umanitoba.ca:1433;"
@@ -61,7 +61,8 @@ public class DatabaseManager {
                 out = "...successfully connected to SQL database.";
             } catch (SQLException e) {
                 e.printStackTrace();
-                out = "ERR: Could not connect to SQL database.";
+                System.out.println("ERR: Could not connect to SQL database.");
+                System.exit(1);
             }
         }
         return out;
