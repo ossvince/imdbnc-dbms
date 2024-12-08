@@ -104,25 +104,25 @@ public class Interface {
         System.out.println("\n\th : View this help menu");
         System.out.println("\tq : Exit this program \n");
         System.out.println("\t[Database management]");
-        System.out.println("\t\tdbc : Create tables in database");
-        System.out.println("\t\tdd : Delete data from database");
-        System.out.println("\t\tdbd : Fully delete database schema");
-        System.out.println("\t\tdbr : Repopulate database");
+        System.out.println("\t- dbc : Create tables in database");
+        System.out.println("\t- dd : Delete data from database");
+        System.out.println("\t- dbd : Fully delete database schema");
+        System.out.println("\t- dbr : Repopulate database");
         System.out.println("\t[Database query commands]");
-        System.out.println("\t\tp : Find a Person by name");
-        System.out.println("\t\tt : Find a Title by name");
-        System.out.println("\t\ttr : Find a Title's rating");
-        System.out.println("\t\tta : List Top 10 Actors by most credits");
-        System.out.println("\t\tmr : List Top 10 Movies by highest Rating");
-        System.out.println("\t\ttd : Find Titles directed by a given Person");
-        System.out.println("\t\tma : Find people associated with a given Movie");
-        System.out.println("\t\tmk : Find Movies a given Person is known for");
-        System.out.println("\t\ttk : Find TV Shows a given Person is known for");
-        System.out.println("\t\tpr : List all Professions");
-        System.out.println("\t\tpro : List all Professionals (People with professions)");
-        System.out.println("\t\teps : List all episodes of a TV series");
-        System.out.println("\t\tam : List People who have appeared in all episodes of a given TV series");
-        System.out.println("\t\tat : List all actors in a title, and the characters they played");
+        System.out.println("\t- p : Find a Person by name");
+        System.out.println("\t- t : Find a Title by name");
+        System.out.println("\t- tr : Find a Title's rating");
+        System.out.println("\t- ta : List Top 10 Actors by most credits");
+        System.out.println("\t- mr : List Top 10 Movies by highest Rating");
+        System.out.println("\t- td : Find Titles directed by a given Person");
+        System.out.println("\t- ma : Find people associated with a given Movie");
+        System.out.println("\t- mk : Find Movies a given Person is known for");
+        System.out.println("\t- tk : Find TV Shows a given Person is known for");
+        System.out.println("\t- pr : List all Professions");
+        System.out.println("\t- pro : List all Professionals (People with professions)");
+        System.out.println("\t- eps : List all episodes of a TV series");
+        System.out.println("\t- am : List People who have appeared in all episodes of a given TV series");
+        System.out.println("\t- at : List all actors in a title, and the characters they played");
     }
 
 }

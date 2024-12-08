@@ -101,7 +101,9 @@ public class DatabaseManager {
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String currLine = br.readLine();
             while(currLine != null) {
+                System.out.println("Executing update " + currLine);
                 this.connection.prepareStatement(currLine).executeUpdate();
+                currLine = br.readLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
