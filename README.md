@@ -1,36 +1,32 @@
-## 3380 Final Project
+## 3380 Final Project - IMDb Non-Commercial Dataset
 
-You should not need to enter a userid and password to use the interface as the file *auth.cfg* 
-automatically does it for you. However, if the userid and password for the fully populated db are needed they are as follows
+### Running the interface
 
-    userid = 
-    password = 
-TODO add userid and password for populated db
+To run our interface, run `make run` while in the program's root directory in your terminal.
 
-### How to run
+A config file (`auth.cfg`) is required in the root directory. In this file there must be two entries:
 
-To run our interface use the command 
+```plaintext
+username=
+password=
+```
 
-    make run
+Where username is your UMnetID, and password is your set password (for Uranium specifically). The program will read this during startup in order to connect to the Uranium server.
 
-in the terminal.
+### Creating the database
 
-### Create Database
+The database is created through the interface. Once the interface is running, and you are connected to the Uranium server, run `dbc` as listed in the interface's help menu. This command will create the tables with the established schema in the source files (`./sql/schema.sql`).
 
-To create the database first run the interface with the previously mentioned command. 
-Then one the interface is running and connected use the command 
+![](./img/menu.png)
 
-    dbc
+### Populating
 
-in the interface which will create the tables for the database.
+Once the tables are created, run `dbr` to populate the database. This is likely to take a while depending on your machine; expect ~30 minutes. The interface will periodically output which table is being populated as it progresses. Once complete, the user will be sent back to the main menu for further querying.
 
-To then populate the database use the command
+![](./img/dbr.png)
 
-    dbr
+### Querying
 
-in the interface to repopulate it with all the data. (It Will likely take 15-20 ish minutes to complete)
-The interface will say 
+Various queries can be executed through the interface; use the `h` command to view the help menu at any time. Below is an example screenshot.
 
-    Database has been successfully populated
-
-when the repopulation is complete.
+![](./img/example.png)
