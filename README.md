@@ -20,7 +20,7 @@ in the terminal.
 To create the database first run the interface with the previously mentioned command. 
 Then one the interface is running and connected use the command 
 
-      dbc
+    dbc
 
 in the interface which will create the tables for the database.
 
