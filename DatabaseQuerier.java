@@ -110,10 +110,10 @@ public class DatabaseQuerier {
                 pstmt.setString(1, name);
                 results = pstmt.executeQuery();
 
-                out += name + " has directed the following titles:\n ";
+                out += name + " has directed the following titles:\n";
                 
                 while(results.next()) {
-                    out += results.getString(1) + "\n";
+                    out += "  " + results.getString(1) + "\n";
                 }
                 out += "Query completed.";
 
@@ -373,7 +373,7 @@ public class DatabaseQuerier {
                         if (!results.getString(2).equalsIgnoreCase(results.getString(3))) {
                             out += " (" + results.getString(3) + ")";
                         }
-                        out += ", id: " + results.getString(1) + ", runtime: " + results.getString(4) + "min" + ", start year: "+ results.getString(5);
+                        out += ", id: " + results.getString(1) + ", aired " + results.getString(4) + ", runtime: "+ results.getString(5);
                         if (results.getInt(6) != 0) {
                             out += ", is an adult title";
                         }
