@@ -23,7 +23,7 @@ FROM Person AS p
 JOIN AssociatedWith AS aw ON p.personID = aw.personID
 JOIN Title AS t ON aw.titleID = t.titleID
 JOIN Movie AS m ON t.titleID = m.titleID
-WHERE m.titleID = ?;
+WHERE t.originalTitle like ? OR t.primaryTitle like ?;
 /* titlesIn */
 SELECT primaryTitle, originalTitle, Title.titleID
 FROM Person

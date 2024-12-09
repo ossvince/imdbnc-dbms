@@ -129,18 +129,18 @@ public class DatabaseQuerier {
     public String movieAssociates(String input) {
         String out = "";
         try {
-            int titleID = Integer.parseInt(input);
             int queryIndex = getQueryIndex("movieAssociates");
             if (queryIndex > -1) {
                 try {
                     PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                    pstmt.setInt(1, titleID);
+                    pstmt.setString(1, input);
+                    pstmt.setString(2, input);
                     ResultSet results = pstmt.executeQuery();
 
-                    out += "Listing associated people with title " + Integer.toString(titleID) + ":\n";
+                    out += "Listing associated people with title " + input + ":\n";
 
                     while(results.next()) {
-                        out += "  " + results.getInt(1) + " " + results.getString(2) + "\n";
+                        out += "  " + results.getString(2) + " ID: " + results.getString(1) + "\n";
                     }
                     out += "Query completed. ";
                 } catch (SQLException sqle) {
