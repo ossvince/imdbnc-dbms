@@ -54,7 +54,7 @@ public class Interface {
                     System.out.println(dbm.query.findTitle(in.nextLine()));
                     break;
                 case "tr":
-                    System.out.print("\nEnter a title ID to get its rating... > ");
+                    System.out.print("\nEnter a titles name to get its rating... > ");
                     System.out.println(dbm.query.getRatings(in.nextLine()));
                     break;
                 case "ta":
@@ -70,7 +70,7 @@ public class Interface {
                     System.out.println(dbm.query.directedTitles(in.nextLine()));
                     break;
                 case "ma":
-                    System.out.print("\nEnter a movie's title ID to find associated people... > ");
+                    System.out.print("\nEnter a movie's name to find associated people... > ");
                     System.out.println(dbm.query.movieAssociates(in.nextLine()));
                     break;
                 case "mk":

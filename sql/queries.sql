@@ -63,7 +63,7 @@ FROM Title WHERE primaryTitle LIKE ? OR originalTitle LIKE ?;
 /* getRatings */
 SELECT avgRating, numVotes FROM Title
 JOIN TitleRating ON Title.titleID=TitleRating.titleID
-WHERE Title.titleID=?;
+WHERE Title.primaryTitle like ? OR Title.originalTitle like ?;
 /* getProfessionals */
 SELECT name, Person.personID, Profession.professionName FROM Profession
 JOIN HasProfession ON Profession.professionName=HasProfession.professionName

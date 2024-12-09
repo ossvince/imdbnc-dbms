@@ -128,29 +128,25 @@ public class DatabaseQuerier {
 
     public String movieAssociates(String input) {
         String out = "";
-        try {
-            int queryIndex = getQueryIndex("movieAssociates");
-            if (queryIndex > -1) {
-                try {
-                    PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                    pstmt.setString(1, input);
-                    pstmt.setString(2, input);
-                    ResultSet results = pstmt.executeQuery();
+        int queryIndex = getQueryIndex("movieAssociates");
+        if (queryIndex > -1) {
+            try {
+                PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
+                pstmt.setString(1, input);
+                pstmt.setString(2, input);
+                ResultSet results = pstmt.executeQuery();
 
-                    out += "Listing associated people with title " + input + ":\n";
+                out += "Listing associated people with title " + input + ":\n";
 
-                    while(results.next()) {
-                        out += "  " + results.getString(2) + " ID: " + results.getString(1) + "\n";
-                    }
-                    out += "Query completed. ";
-                } catch (SQLException sqle) {
-                    out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
+                while(results.next()) {
+                    out += "  " + results.getString(2) + " ID: " + results.getString(1) + "\n";
                 }
-            } else {
-                out = "ERR: could not find query in filesystem!";
+                out += "Query completed. ";
+            } catch (SQLException sqle) {
+                out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
             }
-        } catch (NumberFormatException e) {
-            out = "ERR: Invalid input - ID must be an integer";
+        } else {
+            out = "ERR: could not find query in filesystem!";
         }
         return out;
     }
@@ -173,7 +169,7 @@ public class DatabaseQuerier {
                     if(!results.getString(1).equalsIgnoreCase(results.getString(2))){
                         out += " (" + results.getString(2) + ")\n";
                     }
-                    out +=" ID: " + results.getInt(3) + "\n";
+                    out +=" ID: " + results.getString(3) + "\n";
                 }
                 out += "Query completed.";
             } else {
@@ -256,7 +252,7 @@ public class DatabaseQuerier {
                 out += "Searching for person '"+ name + "': \n";
                 
                 while (results.next()) {
-                    out += "  ID " + Integer.toString(results.getInt(2)) + ", " + results.getString(1); 
+                    out += "  ID " + results.getString(2) + ", " + results.getString(1); 
                     if (results.getInt(3) != 0) { // getInt returns 0 if NULL
                         out += ", born " + Integer.toString(results.getInt(3));
                     }
@@ -296,7 +292,7 @@ public class DatabaseQuerier {
                     if (!results.getString(1).equalsIgnoreCase(results.getString(2))) {
                         out += " (" + results.getString(2) + ")";
                     }
-                    out += ", id: " + Integer.toString(results.getInt(3)) + ", runtime: " + Integer.toString(results.getInt(4)) + "min" + ", start year: "+ results.getString(5);
+                    out += ", id: " + results.getString(3) + ", runtime: " + results.getString(4) + "min" + ", start year: "+ results.getString(5);
                     if (results.getInt(6) != 0) {
                         out += ", is an adult title";
                     }
@@ -315,25 +311,21 @@ public class DatabaseQuerier {
     public String getRatings(String input) {
         String out = "";
         int queryIndex = getQueryIndex("getRatings");
-        try {
-            int titleID = Integer.parseInt(input);
-            if (queryIndex > -1) {
-                try {
-                    PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                    pstmt.setInt(1, titleID);
-                    ResultSet results = pstmt.executeQuery();
-                    while (results.next()) {
-                        out += "  " + Integer.toString(titleID) + " has an average user rating of " + Integer.toString(results.getInt(1)) + " with " + Integer.toString(results.getInt(2)) + " total votes\n" ;
-                    }
-                out += "Query completed.";
-                } catch (SQLException sqle) {
-                    out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
+        if (queryIndex > -1) {
+            try {
+                PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
+                pstmt.setString(1, input);
+                pstmt.setString(2, input);
+                ResultSet results = pstmt.executeQuery();
+                while (results.next()) {
+                    out += "  " + input + " has an average user rating of " + results.getString(1) + " with " + results.getString(2) + " total votes\n" ;
                 }
-            } else {
-                out = "ERR: could not find query in filesystem!";
+            out += "Query completed.";
+            } catch (SQLException sqle) {
+                out = "ERR: SQL/Database connection failed to execute query. Does the data exist?";
             }
-        } catch (NumberFormatException e) {
-            out = "ERR: Invalid input - ID must be an integer";
+        } else {
+            out = "ERR: could not find query in filesystem!";
         }
         return out;
     }
@@ -350,7 +342,7 @@ public class DatabaseQuerier {
                 out += "Listing all people with profession '"+profName+"': \n";
                 
                 while (results.next()) {
-                    out += "  " + results.getString(1) + " (id "+ Integer.toString(results.getInt(2)) + ") has profession " + results.getString(3) + "\n";
+                    out += "  " + results.getString(1) + " (id "+ results.getString(2) + ") has profession " + results.getString(3) + "\n";
                 }
                 out += "Query completed.";
             } else {
@@ -441,28 +433,24 @@ public class DatabaseQuerier {
 
     public String listCastAndRoles(String input) {
         String out = "";
-        try {
-            int queryIndex = getQueryIndex("listCastAndRoles");
-            if (getQueryIndex("listCastAndRoles") > -1) {
-                try {
-                    PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
-                    pstmt.setString(1, input);
-                    pstmt.setString(2, input);
+        int queryIndex = getQueryIndex("listCastAndRoles");
+        if (getQueryIndex("listCastAndRoles") > -1) {
+            try {
+                PreparedStatement pstmt = this.connection.prepareStatement(this.queries.get(queryIndex));
+                pstmt.setString(1, input);
+                pstmt.setString(2, input);
 
-                    ResultSet results = pstmt.executeQuery();
-                    
-                    out += "Listing cast and roles for title "+input+"\n";
-                    
-                    while (results.next()) {
-                        out += "  " + results.getString(2) + " (personID " + results.getString(1) + ") played character " + results.getString(3) + "\n";
-                    }
-                    out += "Query completed.";
-                } catch (SQLException e) {
-                    out = "ERR: SQL/Database connection failed to execute query.";
+                ResultSet results = pstmt.executeQuery();
+                
+                out += "Listing cast and roles for title "+input+"\n";
+                
+                while (results.next()) {
+                    out += "  " + results.getString(2) + " (personID " + results.getString(1) + ") played character " + results.getString(3) + "\n";
                 }
+                out += "Query completed.";
+            } catch (SQLException e) {
+                out = "ERR: SQL/Database connection failed to execute query.";
             }
-        } catch (NumberFormatException e) {
-            out = "ERR: Invalid input - ID must be an integer";
         }
         return out;
     }
