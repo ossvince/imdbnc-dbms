@@ -34,7 +34,6 @@ public class Interface {
                     break;
                 case "dbr":
                     System.out.println("Please wait. Repopulating database...");
-                    //System.out.println(dbm.updateDatabaseByLine("sql/insert-test.sql"));
                     System.out.println(dbm.updateDatabaseByLine("sql/insert1.sql"));
                     System.out.println(dbm.updateDatabaseByLine("sql/insert2.sql"));
                     System.out.println(dbm.updateDatabaseByLine("sql/insert3.sql"));
@@ -42,6 +41,7 @@ public class Interface {
                     break;
                 case "dd":
                     System.out.println(dbm.updateDatabaseByLine("sql/deleteData.sql"));
+                    break;
                 case "dbd":
                     System.out.println(dbm.updateDatabaseByLine("sql/dropSchema.sql"));
                     break;
