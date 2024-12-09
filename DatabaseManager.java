@@ -118,12 +118,12 @@ public class DatabaseManager {
             this.connection.prepareStatement(statement).executeUpdate();
             this.connection.commit();
             this.connection.setAutoCommit(true);
-            out += " complete.";
         } catch (IOException e) {
             e.printStackTrace();
             out = "ERR: Could not find required .sql file to execute updates.";
         } catch (SQLException e) {
         }
+        out += " complete.";
         return out;   
     }
 
